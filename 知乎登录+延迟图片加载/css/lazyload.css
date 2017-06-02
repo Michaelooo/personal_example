@@ -1,0 +1,63 @@
+.section {
+    text-align: center;
+    font: 50px "Microsoft Yahei";
+    color: #fff;
+}
+/*
+.section1 p {
+    
+}*/
+
+.section2 p {
+    position: relative;
+    left: -120%;
+}
+
+.section3 p {
+    position: relative;
+    bottom: 0;
+}
+
+
+.section4 p {
+    bottom: 0;
+}
+
+.section2 p.inner {
+    animation: section2 2s linear;
+}
+
+
+.section3 p.inner {
+    transition: all 2s linear;
+    transform: translateY(200px) rotate(360deg) ;
+}
+
+
+.section4 p.inner {
+    transition: all 2s linear;
+    transform: translateY(-200px) ;
+}
+
+@keyframes section2 {
+    0% {
+        left: -120%;
+        transform: scale(1,1);
+    }
+    25% {
+        left: -60%;
+        transform: scale(1,1);
+    }
+    50% {
+        left: 0;
+        transform: scale(1,1);
+    }
+    70% {
+        left: 0;
+        transform: scale(2,2);
+    }
+    100% {
+        left: 0;
+        transform: scale(1,1);
+    }
+}

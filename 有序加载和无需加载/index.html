@@ -86,6 +86,7 @@
         });
 
         $.Preload(imgs, {
+            isOrdered: false,
             loadOnce: function (count) {
                 $progress.html(Math.round((count + 1) / len * 100) + '%');
             },

@@ -38,7 +38,7 @@
             $(imgobj).on('load error', function () {
                 opts.loadOnce && opts.loadOnce(count);
                 if (count >= len) {
-                    opts.all && opts.all();
+                    opts.loadAll && opts.loadAll();
                 } else {
                     load();
                 }
@@ -62,7 +62,7 @@
             $(imgobj).on('load error', function () {
                 opts.loadOnce && opts.loadOnce(count)
                 if (count >= len - 1) {
-                    opts.all && opts.all()
+                    opts.loadAll && opts.loadAll()
                 }
                 count++;
             });
