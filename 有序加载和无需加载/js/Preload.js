@@ -76,5 +76,5 @@
             new Preload(img, options);
         }
     });
-    
+
 })(jQuery);
