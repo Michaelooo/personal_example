@@ -2,13 +2,13 @@
 撸自慕课网，其实这里面算法没搞明白
 */
 var chessBoard = []; //用于判断指定位置是否已落子
-var me = true; //角色。默认是自己
+var me = true;
 var over = false; //用于判断游戏是否结束
 
 // 所有的赢法数组
 var wins = [];
 
-// 包括玩家和计算机的赢法数组
+// 赢法的统计数组
 var myWin = [];
 var computerWin = [];
 
@@ -41,10 +41,10 @@ for (var i = 0; i < 15; i++) {
 }
 
 // 竖线的赢法
-for (var i = 0; i < 15; i++) {
-	for (var j = 0; j < 11; j++) {
+for (var i = 0; i < 11; i++) {
+	for (var j = 0; j < 15; j++) {
 		for (var k = 0; k < 5; k++) {
-			wins[j + k][i][count] = true;
+			wins[i+k][j][count] = true;
 		}
 		count++;
 	}
@@ -61,15 +61,16 @@ for (var i = 0; i < 11; i++) {
 }
 
 // 反斜线的赢法
-for (var i = 0; i < 11; i++) {
-	for (var j = 14; j > 3; j--) {
+for (var i = 14; i >= 4; i--) {
+	for (var j = 0; j < 11; j++) {
 		for (var k = 0; k < 5; k++) {
-			wins[i + k][j - k][count] = true;
+			wins[i - k][j + k][count] = true;
 		}
 		count++;
 	}
 }
 
+// 初始化赢法
 for (var i = 0; i < count; i++) {
 	myWin[i] = 0;
 	computerWin[i] = 0;
@@ -87,6 +88,7 @@ logo.src = 'image/1.png';
 logo.onload = function () {
 	context.drawImage(logo, 0, 0, 450, 450);
 	drawChessBoard();
+
 }
 
 
@@ -117,6 +119,39 @@ var oneStep = function (i, j, me) {
 	context.fill();
 }
 
+chess.onclick = function (e) {
+	if (over) return;
+	if (!me) return;
+	var x = e.offsetX;
+	var y = e.offsetY;
+	var i = Math.floor(x / 30);
+	var j = Math.floor(y / 30);
+	if (chessBoard[i][j] == 0) {
+		oneStep(i, j, me);
+		chessBoard[i][j] = 1;
+
+		if (me) {
+			chessBoard[i][j] = 1;
+		} else {
+			chessBoard[i][j] = 2;
+		}
+
+		for (var k = 0; k < count; k++) {
+			if (wins[i][j][k]) {
+				myWin[k]++;
+				computerWin[k] = 6;
+				if (myWin[k] == 5) {
+					window.alert("you win");
+					over = true;
+				}
+			}
+		}
+		if (!over) {
+			me = !me;
+			computerAI();
+		}
+	}
+}
 var computerAI = function () {
 	var myScore = [];
 	var computerScore = [];
@@ -152,7 +187,7 @@ var computerAI = function () {
 						} else if (computerWin[k] = 2) {
 							computerScore[i][j] += 420;
 						} else if (computerWin[k] = 3) {
-							computerScore[i][j] += 2200;
+							computerScore[i][j] += 2100;
 						} else if (computerWin[k] = 4) {
 							computerScore[i][j] += 20000;
 						}
@@ -200,34 +235,5 @@ var computerAI = function () {
 
 	if (!over) {
 		me = !me;
-	}
-}
-
-chess.onclick = function (e) {
-	if (over) return;
-	if (!me) return;
-	var x = e.offsetX;
-	var y = e.offsetY;
-	var i = Math.floor(x / 30);
-	var j = Math.floor(y / 30);
-	if (chessBoard[i][j] == 0) {
-		oneStep(i, j, me);
-		chessBoard[i][j] = 1;
-
-		for (var k = 0; k < count; k++) {
-			if (wins[i][j][k]) {
-				myWin[k]++;
-				computerWin[k] = 6;
-				if (myWin[k] == 5) {
-					window.alert("you win");
-					over = true;
-				}
-			}
-		}
-
-		if (!over) {
-			me = !me;
-			computerAI();
-		}
 	}
 }
