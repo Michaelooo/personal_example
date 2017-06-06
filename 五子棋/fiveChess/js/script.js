@@ -34,17 +34,17 @@ var count = 0;
 for (var i = 0; i < 15; i++) {
 	for (var j = 0; j < 11; j++) {
 		for (var k = 0; k < 5; k++) {
-			wins[i][j + k][count] = true;
+			wins[i][j+k][count] = true;
 		}
 		count++;
 	}
 }
 
 // 竖线的赢法
-for (var i = 0; i < 11; i++) {
-	for (var j = 0; j < 15; j++) {
+for (var i = 0; i < 15; i++) {
+	for (var j = 0; j < 11; j++) {
 		for (var k = 0; k < 5; k++) {
-			wins[i+k][j][count] = true;
+			wins[j+k][i][count] = true;
 		}
 		count++;
 	}
@@ -54,17 +54,17 @@ for (var i = 0; i < 11; i++) {
 for (var i = 0; i < 11; i++) {
 	for (var j = 0; j < 11; j++) {
 		for (var k = 0; k < 5; k++) {
-			wins[i + k][j + k][count] = true;
+			wins[i+k][j+k][count] = true;
 		}
 		count++;
 	}
 }
 
 // 反斜线的赢法
-for (var i = 14; i >= 4; i--) {
-	for (var j = 0; j < 11; j++) {
+for (var i = 0; i < 11; i++) {
+	for (var j = 14; j > 3; j--) {
 		for (var k = 0; k < 5; k++) {
-			wins[i - k][j + k][count] = true;
+			wins[i+k][j-k][count] = true;
 		}
 		count++;
 	}
