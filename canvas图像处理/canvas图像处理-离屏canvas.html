@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>canvas图像处理-离屏canvas</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--<link href="css/style.css" rel="stylesheet">-->
+    </head>
+    <body style="background: black;">
+    <canvas id="canvas" style="display:block;margin:0 auto;border:1px solid #aaa;">
+        您的浏览器不支持canvas!
+    </canvas>
+    <input type="range" id="scale-range" min='0.5' max='3.0' step="0.01" name="scale-range" value="0.5" style="display:block;margin:20px auto;width: 1134px;">
+    <canvas id="watermark-canvas" style="display:none;margin:0 auto;border:1px solid #aaa;">
+        您的浏览器不支持canvas!
+    </canvas>
+    <script type="text/javascript">
+    var canvas = document.getElementById('canvas');
+    var slider = document.getElementById('scale-range');
+    var ctx = canvas.getContext('2d');
+    var image = new Image();
+
+    var watermark_canvas = document.getElementById('watermark-canvas');
+    var w_ctx = watermark_canvas.getContext('2d');
+
+    window.onload = function () {
+        canvas.width = 1134;
+        canvas.height = 768;
+
+        var scale = slider.value;
+        image.src = "1.jpg";
+        image.onload = function() {
+            // ctx.drawImage(image,0,0,canvas.width,canvas.height);
+            drawImageByScale(scale);
+            slider.onmousemove = function () {
+                scale = slider.value;
+                drawImageByScale(scale);
+            }
+        }
+
+        //设置水印
+        watermark_canvas.width = 600;
+        watermark_canvas.height = 100;
+
+        w_ctx.font = 'bold 50px Arial';
+        w_ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        w_ctx.textBaseline = 'middle';
+        w_ctx.fillText('**版权所有 仿冒必究**',20,50);
+    }
+
+    function drawImageByScale(scale){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        var imageWidth = 1134 *scale;
+        var imageHeight = 768 *scale;
+
+        // var sx = (imageWidth - canvas.width)/2;
+        // var sy = (imageHeight - canvas.height)/2;
+        // ctx.drawImage(image,sx,sy,canvas.width,canvas.height,0,0,canvas.width,canvas.height);
+
+        var dx = (canvas.width - imageWidth)/2;
+        var dy = (canvas.height - imageHeight)/2;
+        ctx.drawImage(image,dx,dy,imageWidth,imageWidth);
+        ctx.drawImage(watermark_canvas,canvas.width - watermark_canvas.width, canvas.height - watermark_canvas.height);
+    }
+    </script>
+    </body>
+</html>

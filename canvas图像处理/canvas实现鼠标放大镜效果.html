@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>canvas实现鼠标放大镜效果</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link href="css/style.css" rel="stylesheet">-->
+</head>
+
+<body style="background: black;">
+    <canvas id="canvas" style="display:block;margin:0 auto;border:1px solid #aaa;">
+        您的浏览器不支持canvas!
+    </canvas>
+    <canvas id="offCanvas" style="display:none;">
+        您的浏览器不支持canvas!
+    </canvas>
+    <script type="text/javascript">
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+        var image = new Image();
+        var isMouseDown = false;
+        var scale;
+
+        var offCanvas = document.getElementById('offCanvas');
+        var offContext = offCanvas.getContext('2d');
+
+        window.onload = function () {
+            canvas.width = 1134;
+            canvas.height = 768;
+
+            image.src = "1.jpg";
+            image.onload = function () {
+                offCanvas.width = image.width;
+                offCanvas.height = image.height;
+                scale = offCanvas.width / canvas.width;
+
+                ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                offContext.drawImage(image, 0, 0);
+            }
+        }
+
+        function windowToCanvas(x, y) {
+            var bbox = canvas.getBoundingClientRect();
+            return {
+                x: x - bbox.left,
+                y: y - bbox.top
+            }
+        }
+
+        canvas.onmousedown = function (e) {
+            e.preventDefault();
+
+            var point = windowToCanvas(e.clientX, e.clientY);
+            console.log(point.x, point.y);
+            isMouseDown = true;
+            drawCanvasWithMagnifier(true, point);
+        }
+
+        canvas.onmousemove = function (e) {
+            e.preventDefault();
+            if (isMouseDown) {
+                var point = windowToCanvas(e.clientX, e.clientY);
+                drawCanvasWithMagnifier(true, point);
+            }
+        }
+
+        canvas.onmouseup = function (e) {
+            e.preventDefault();
+            isMouseDown = false;
+            drawCanvasWithMagnifier(false);
+        }
+        canvas.onmouseout = function (e) {
+            e.preventDefault();
+            isMouseDown = false;
+            drawCanvasWithMagnifier(false);
+        }
+
+        function drawCanvasWithMagnifier(isShowMagnifier, point) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            if (isShowMagnifier) {
+                drawMagnifier(point);
+            }
+        }
+
+        function drawMagnifier(point) {
+            var image_cx = point.x * scale;
+            var image_cy = point.y * scale;
+
+            var mr = 200;
+
+            var sx = image_cx - mr;
+            var sy = image_cy - mr;
+
+            var dx = point.x - mr;
+            var dy = point.y - mr;
+            ctx.save();
+
+            ctx.lineWidth = 10.0;
+            ctx.strokeStyle = '#069';
+
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, mr, 0, 2 * Math.PI, false);
+            ctx.stroke();
+
+            ctx.clip();
+            ctx.drawImage(offCanvas, sx, sy, 2 * mr, 2 * mr, dx, dy, 2 * mr, 2 * mr);
+            ctx.restore();
+        }
+    </script>
+</body>
+
+</html>

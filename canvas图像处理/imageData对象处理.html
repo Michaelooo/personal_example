@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>关于ImageData的图像处理运用</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <div style="margin:20px auto;width:1700px;">
+        <canvas id="canvasa" width="800px" height="560px" style="float:left;margin:0 auto;border:1px solid #aaa;">
+            您的浏览器不支持canvas!
+        </canvas>
+        <canvas id="canvasb" width="800px" height="560px" style="float:right;margin:0 auto;border:1px solid #aaa;">
+            您的浏览器不支持canvas!
+        </canvas>
+    </div>
+    <div style="clear:both;"></div>
+    <div style="text-align:center;margin-top:50px;font-size:20px;">
+        <a href="javascript:greyEffect()">Grey Effect</a>
+        <a href="javascript:blackEffect()">Black&White Effect</a>
+        <a href="javascript:blurEffect()">Blur Effect</a>
+    </div>
+    <script type="text/javascript">
+        var canvasa = document.getElementById('canvasa');
+        var contexta = canvasa.getContext('2d');
+
+        var canvasb = document.getElementById('canvasb');
+        var contextb = canvasb.getContext('2d');
+
+        var image = new Image();
+        window.onload = function () {
+            image.src = '1.jpg';
+            image.onload = function () {
+                contexta.drawImage(image, 0, 0, canvasa.width, canvasa.height);
+            }
+        }
+
+        function greyEffect() {
+            var imageData = contexta.getImageData(0, 0, canvasa.width, canvasa.height);
+            var pixelData = imageData.data;
+
+            for (var i = 0; i < canvasa.width * canvasa.height; i++) {
+                var r = pixelData[i * 4 + 0];
+                var g = pixelData[i * 4 + 1];
+                var b = pixelData[i * 4 + 2];
+
+                var grey = r * 0.3 + g * 0.56 + b * 0.11;
+
+                pixelData[i * 4 + 0] = grey;
+                pixelData[i * 4 + 1] = grey;
+                pixelData[i * 4 + 2] = grey;
+            }
+            contextb.putImageData(imageData, 0, 0, 0, 0, canvasb.width, canvasb.height);
+        }
+
+        function blackEffect() {
+            var imageData = contexta.getImageData(0, 0, canvasa.width, canvasa.height);
+            var pixelData = imageData.data;
+
+            for (var i = 0; i < canvasa.width * canvasa.height; i++) {
+                var r = pixelData[i * 4 + 0];
+                var g = pixelData[i * 4 + 1];
+                var b = pixelData[i * 4 + 2];
+
+                var grey = r * 0.3 + g * 0.56 + b * 0.11;
+                if (grey > 255 / 2) {
+                    v = 255
+                } else {
+                    v = 0
+                }
+
+                pixelData[i * 4 + 0] = v;
+                pixelData[i * 4 + 1] = v;
+                pixelData[i * 4 + 2] = v;
+            }
+            contextb.putImageData(imageData, 0, 0, 0, 0, canvasb.width, canvasb.height);
+        }
+
+        function blurEffect() {
+            var tmlImageData = contexta.getImageData(0, 0, canvasa.width, canvasa.height);
+            var tmpPixelData = tmlImageData.data;
+            var imageData = contexta.getImageData(0, 0, canvasa.width, canvasa.height);
+            var pixelData = imageData.data;
+            var blurR = 3;
+            var totalnum = (2 * blurR + 1) * (2 * blurR + 1);
+            for (var i = blurR; i < canvasb.height - blurR; i++) {
+                for (var j = blurR; j < canvasb.width - blurR; j++) {
+                    var totalr = 0,
+                        totalg = 0,
+                        totalb = 0;
+                    for (var dx = -blurR; dx <= blurR; dx++) {
+                        for (var dy = -blurR; dy <= blurR; dy++) {
+                            var x = i + dx;
+                            var y = j + dy;
+
+                            var p = x * canvasb.width + y;
+                            totalr += tmpPixelData[p * 4 + 0]
+                            totalg += tmpPixelData[p * 4 + 1]
+                            totalb += tmpPixelData[p * 4 + 2]
+                        }
+                        var p = i * canvasb.width + j;
+                        pixelData[p * 4 + 0] = totalr / totalnum;
+                        pixelData[p * 4 + 1] = totalg / totalnum;
+                        pixelData[p * 4 + 2] = totalg / totalnum;
+                    }
+                }
+            }
+
+            contextb.putImageData(imageData, 0, 0, 0, 0, canvasb.width, canvasb.height);
+        }
+    </script>
+</body>
+
+</html>
