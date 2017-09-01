@@ -25,3 +25,6 @@ Nginx的中文文档，排版和易读性都比官网要好一些，但是要�
 [知乎：tomcat 与 nginx，apache的区别是什么？](https://www.zhihu.com/question/32212996)
 ### 4.Nginx的配置文件怎么看？
 ### 5.怎么用Nginx做反向代理和负载均衡？
+### 6.Nginx日志处理？
+### 7.Nginx缓存处理？
+
