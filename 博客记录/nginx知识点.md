@@ -1,5 +1,7 @@
 # nginx知识备忘
 ## Nginx是什么？
+
+
 引用百科的话说，**Nginx** (engine x) 是一个高性能的HTTP和反向代理服务器,也可以作为IMAP/POP3/SMTP邮件服务器。Nginx很轻（占用内存少）、Nginx支持高并发、Nginx足够稳定，当然还有一点，Nginx开源。
 
 ## 怎么学习Nginx
