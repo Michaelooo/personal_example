@@ -1,5 +1,5 @@
 # git comment 添加表情
-看到别人的comment history有那么多的卡哇伊的表情，是不是很羡慕，现在自己也可以做到。只需要在comment加入**:apple:**这样的代码，测试`GitHub`和`Gitlab`是可用的
+看到别人的comment history有那么多的卡哇伊的表情，是不是很羡慕，现在自己也可以做到。只需要在comment加入:apple:这样的代码，测试`GitHub`和`Gitlab`是可用的
 ```
 git commit -m ':apple: i have a apple'
 ```
