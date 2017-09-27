@@ -63,6 +63,11 @@ tree -f > test.txt
 tree -L 2
 ```
 
+## 显示中文（解决乱码）:
+```
+tree -N
+```
+
 ## 更多操作
 ```
 tree --help
