@@ -1,4 +1,7 @@
-// 网上找的爬虫示例，偶报404错误
+// 网上找的爬虫示例，会报404错误
+/**
+ * 应该是请求头的问题
+ */
 var request = require('request');
 var cheerio = require('cheerio');
 var path = require('path');
@@ -60,9 +63,9 @@ function acquireData(url, data) {
         .text();
     console.log('获得:' + mm + '张妹子图');
     var list = url.split('/');
-    for (var i = 1; i < mm; i++) {
+    for (var i = 1; i < 3; i++) {
         var imgsrc = path.dirname(meizi[0].attribs.src) + '/' + i + '.jpg';
-        console.log(imgsrc);
+        console.log('download',imgsrc);
         var filename = parseUrlForFileName(imgsrc); //生成文件名
         downloadImg(imgsrc, filename, './mei/' + list[4], function () {
             console.log(filename + ' done');
@@ -76,11 +79,6 @@ function parseUrlForFileName(address) {
 var downloadImg = function (uri, filename, dir, callback) {
     request({
         uri: uri,
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like ' +
-                    'Gecko) Chrome/39.0.2171.99 Safari/537.36',
-            'Connection': 'keep-alive'
-        },
         encoding: 'binary'
     }, function (error, response, body) {
         if(error){
