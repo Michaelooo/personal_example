@@ -25,11 +25,11 @@ const getImgUrl = () => {
                 console.log('boom sha ka la ka', err)
                 return false
             }
-            // console.log('qqqq',iconv.encodingExists("gb2312"),res.text); let resBody =
-            // iconv.decode(res.text,'utf-8','gb2312');
-            console.log('resBody', res.text);
+            
+            //console.log('resBody', res.text);
             let $ = cheerio.load(res.text);
             let imgDom = $('div.changeDiv a').toArray();
+            console.log('imgdOM',imgDom);
             for (let index = 0; index < imgDom.length; index++) {
                 let aUrl = imgDom[index].attribs.href;
                 imgUrl.push(path.join(urlPre, aUrl));
