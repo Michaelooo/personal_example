@@ -6,16 +6,17 @@ const async = require('async');
 const mkdirp = require('mkdirp');
 const iconv = require('iconv-lite');
 const request = require('superagent-charset')(superagent);
+const requestP = require('request');
 
 const baseUrl = 'http://www.zbjuran.com/mei/'
 const urlPre = 'http://www.zbjuran.com';
 
 // 获取目标网址列表，并创建文件夹
 let dir = './meizi/';
-let imgUrl = [];
+let imgUrl = [],bigImgUrl=[];
 let tasks = [];
 
-const getImgUrl = () => {
+const getImgUrl = (callback) => {
     request
         .get(baseUrl)
         .set('Content-Type', 'text/html;charset=gb2312')
@@ -25,11 +26,10 @@ const getImgUrl = () => {
                 console.log('boom sha ka la ka', err)
                 return false
             }
-            
+
             //console.log('resBody', res.text);
             let $ = cheerio.load(res.text);
             let imgDom = $('div.changeDiv a').toArray();
-            console.log('imgdOM',imgDom);
             for (let index = 0; index < imgDom.length; index++) {
                 let aUrl = imgDom[index].attribs.href;
                 imgUrl.push(path.join(urlPre, aUrl));
@@ -44,28 +44,28 @@ const getImgUrl = () => {
                 })
 
             }
+            console.log('aaaaa',imgUrl);
+            asyncQuery(imgUrl);
         })
-    return imgUrl;
 }
 
 // 得到目标大图URL列表，进一步获取图片
-const fetchUrl = (url,callback) => {
+const fetchUrl = (url, callback) => {
+    console.log('yyyyy',url);
     request
-        .get(item)
-        .set('Content-Type', 'text/html;charset=gb2312')
+        .get(url)
         .end(function (err, res) {
             if (err) {
                 console.log('boom sha ka la ka', err);
                 return false;
             }
-            console.log('sss',res.text);
+            console.log('sss', res.text);
             let $ = cheerio.load(res.text);
             let imgDom = $('div.picbox img').toArray();
-            console.log('xxxx',imgDom);
+            console.log('xxxx', imgDom);
         })
     return bigImgUrl;
 }
-
 
 // 下载图片
 const dowloadImg = (uri, des, callback) => {
@@ -91,37 +91,36 @@ const dowloadImg = (uri, des, callback) => {
     });
 }
 
-
 // 并发执行请求
 const asyncQuery = (urls) => {
-    async.eachOfSeries(urls, function (url, callback) {
-        fetchUrl(url, callback);
-    }, function (err, result) {
-        if (err) {
-            console.log('出错了哦：', err);
-        } else {
-            console.log(result, '大门已经全部打开，安静等待下载吧。');
-        }
-    })
+    async
+        .eachOfSeries(urls, function (url, callback) {
+            fetchUrl(url, callback);
+        }, function (err, result) {
+            if (err) {
+                console.log('出错了哦：', err);
+            } else {
+                console.log(result, '大门已经全部打开，安静等待下载吧。');
+            }
+        })
 }
+getImgUrl();
+// tasks
+//     .push(function (callback) {
+//         let urls = getImgUrl();
+//         console.log('oneoneone', urls);
+//         callback(null, urls);
+//     });
+// tasks.push(function (urls, callback) {
+//     console.log('sasasa', urls);
+//     asyncQuery(urls, callback);
+//     //callback(null,'done');
+// })
 
-tasks.push(function(callback){
-    let urls = getImgUrl();
-    console.log('oneoneone',urls);
-    
-    callback(null,urls);
-});
-tasks.push(function(urls,callback){
-    console.log('sasasa',urls);
-    asyncQuery(urls,callback);
-    //callback(null,'done');
-})
-
-async.waterfall(tasks,function(err,res){
-    if (err) {
-        console.log('出错了哦：', err);
-    } else {
-        console.log(res, '下载完成。');
-    }
-})
-
+// async.waterfall(tasks, function (err, res) {
+//     if (err) {
+//         console.log('出错了哦：', err);
+//     } else {
+//         console.log(res, '下载完成。');
+//     }
+// })
