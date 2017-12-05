@@ -1,19 +1,18 @@
 const cheerio = require('cheerio');
-const superagent = require('superagent');
+const request = require('superagent');
 const path = require('path')
 const fs = require('fs');
 const async = require('async');
 const mkdirp = require('mkdirp');
 const iconv = require('iconv-lite');
-const request = require('superagent-charset')(superagent);
-const requestP = require('request');
-
+require('superagent-charset')(request);
+//const page = require('webpage').create();
 const baseUrl = 'http://www.zbjuran.com/mei/'
 const urlPre = 'http://www.zbjuran.com';
-
+const http = require('http');
 // 获取目标网址列表，并创建文件夹
 let dir = './meizi/';
-let imgUrl = [],bigImgUrl=[];
+let imgUrl = [],bigImgUrl=[],fileNameArr = [];
 let tasks = [];
 
 const getImgUrl = (callback) => {
@@ -52,8 +51,46 @@ const getImgUrl = (callback) => {
 // 得到目标大图URL列表，进一步获取图片
 const fetchUrl = (url, callback) => {
     console.log('yyyyy',url);
+
+    // var option = {
+    //     hostname: 'www.zbjuran.com',
+    //     path: url.split('www.zbjuran.com')[1]
+    // }
+    // let req = http.request(option,function(res){
+    //     res.on('data',function(chunk) {
+    //         let data = iconv.decode(chunk, "gbk");
+    //         let $ = cheerio.load(data);
+    //         let imgDom = $('div.picbox img').toArray();
+    //         for (let index = 0; index < imgDom.length; index++) {
+    //             let srcUrl = imgDom[index].attribs.src;
+    //             let srcText = imgDom[index].attribs.alt;
+    //             bigImgUrl.push(path.join(urlPre, srcUrl));
+    //             fileNameArr.push(srcText);
+    //         }
+    //         console.log('++++++',bigImgUrl);
+    //         bigImgUrl.forEach(function(item,index){
+    //             console.log('urll',item);
+    //             dowloadImg(item,fileNameArr[index],dir);
+    //         })
+    //     }).on('error',function(err){
+    //         console.log(err.message)
+    //     })
+    // })
+    // req.end();
+    // page.open(url, function (status) {
+    //     if(status === 'fail'){
+    //         console.log('报错了你知道吗')
+    //     }
+    //     var content = page.content;
+    //     console.log('Content: ' + content);
+    //     let $ = cheerio.load(content);
+    //     let imgDom = $('div.picbox img').toArray();
+    //     console.log('xxx',imgDom);
+    //     phantom.exit();
+    // });
     request
         .get(url)
+        .charset('gbk')
         .end(function (err, res) {
             if (err) {
                 console.log('boom sha ka la ka', err);
@@ -64,37 +101,58 @@ const fetchUrl = (url, callback) => {
             let imgDom = $('div.picbox img').toArray();
             console.log('xxxx', imgDom);
         })
-    return bigImgUrl;
 }
 
 // 下载图片
-const dowloadImg = (uri, des, callback) => {
-    request({
-        uri: uri,
-        encoding: 'binary'
-    }, function (error, response, body) {
-        if (error) {
-            console.log(error);
-        }
-        console.log('======', body);
-        if (!error && response.statusCode == 200) {
-            if (!body) 
-                console.log("(╥╯^╰╥)哎呀没有内容。。。")
-            fs
-                .writeFile(dir + '/' + filename, body, 'binary', function (err) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    console.log('o(*￣▽￣*)o偷偷下载' + dir + '/' + filename + ' done');
-                });
-        }
-    });
+const dowloadImg = (uri, filename, dir, callback) => {
+    request
+        .get(uri)
+        .end(function(error, response){
+            if (error) {
+                console.log(error);
+            }
+            console.log('======', response);
+            if (!error && response.statusCode == 200) {
+                if (!body) 
+                    console.log("(╥╯^╰╥)哎呀没有内容。。。")
+                fs
+                    .writeFile(dir + '/' + filename, body, 'binary', function (err) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        console.log('o(*￣▽￣*)o偷偷下载' + dir + '/' + filename + ' done');
+                    });
+            }
+        })
+
+    // request({
+    //     uri: uri,
+    //     encoding: 'binary'
+    // }, function (error, response, body) {
+    //     if (error) {
+    //         console.log(error);
+    //     }
+    //     console.log('======', body);
+    //     if (!error && response.statusCode == 200) {
+    //         if (!body) 
+    //             console.log("(╥╯^╰╥)哎呀没有内容。。。")
+    //         fs
+    //             .writeFile(dir + '/' + filename, body, 'binary', function (err) {
+    //                 if (err) {
+    //                     console.log(err);
+    //                 }
+    //                 console.log('o(*￣▽￣*)o偷偷下载' + dir + '/' + filename + ' done');
+    //             });
+    //     }
+    // });
 }
 
 // 并发执行请求
 const asyncQuery = (urls) => {
+    console.log('urls',urls);
     async
         .eachOfSeries(urls, function (url, callback) {
+            console.log('url',url);
             fetchUrl(url, callback);
         }, function (err, result) {
             if (err) {

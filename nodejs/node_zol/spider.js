@@ -10,7 +10,7 @@ require('superagent-charset')(request);
 const config = {
     urlPre: 'http://www.zbjuran.com',
     indexUrl: 'http://www.zbjuran.com/mei/',
-    downloadConcurrent: 2, 
+    downloadConcurrent: 10, 
 };
 
 let getHtmlAsync = (url) => {
@@ -53,7 +53,7 @@ let dowloadImg = (albumList) => {
             imgListTemp.push({ title: title, url: url });
         });
     });
-    console.log('sssss',albumList,imgListTemp);
+    //console.log('sssss',albumList,imgListTemp);
     queue.push(imgListTemp);//将所有任务加入队列
 }
 
@@ -101,7 +101,7 @@ let getTargetAsync = (targetUrl) => {
                     imgList.push(`${config.urlPre}${value.attribs.src}`);
                     for (let i = 0,length = imgLength; i < length; i++) {
                         if(i >= 1){
-                            imgList.push(`${config.urlPre}${imgSrcPath.replace('-0','-'+i)}.jpg`);
+                            imgList.push(`${config.urlPre}${imgSrcPath.replace('-0','-'+i)}`);
                         }
                     }
                 });
