@@ -199,3 +199,48 @@ module.exports = function arrayDiff(arr) {
 
 
 // 10.将对象转换为数组(特殊规则)
+
+// 需要引入一个 映射 obj 的库
+const map = require('map-obj');
+
+function mapToArray(obj, fn) {
+	let idx = 0;
+	const result = map(obj, (key, value) =>
+		[idx++, fn(key, value)]
+	);
+	result.length = idx;
+	return Array.from(result);
+}
+
+module.exports = mapToArray;
+
+// 11. 判断是否存在一个数组中
+module.exports = function inArray(arr, val){
+	arr = arr || [];
+	let len = arr.length;
+	let i = 0;
+
+	for(;i<len;i++){
+		if(arr[i] === val){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// 12. 移除数组中的某个位置上的元素(适用于不需要排序，因为会将最后一个元素的位置移到被删除的位置)
+module.exports = remove;
+
+function remove (arr, i) {
+  if (i >= arr.length || i < 0) return;
+  var last = arr.pop()
+  if (i < arr.length) {
+    var tmp = arr[i]
+    arr[i] = last
+    return tmp
+  }
+  return last
+}
+
+// 13. 根据某种规则对数组进行 group
