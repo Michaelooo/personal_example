@@ -1,23 +1,4 @@
-// 日期时间相关
-
-// 1. 解析 ms数 为具体的时间
-function parseMs(ms) {
-	if (typeof ms !== 'number') {
-		throw new TypeError('Expected a number');
-	}
-
-	var roundTowardZero = ms > 0 ? Math.floor : Math.ceil;
-
-	return {
-		days: roundTowardZero(ms / 86400000),
-		hours: roundTowardZero(ms / 3600000) % 24,
-		minutes: roundTowardZero(ms / 60000) % 60,
-		seconds: roundTowardZero(ms / 1000) % 60,
-		milliseconds: roundTowardZero(ms) % 1000
-	};
-};
-
-// 2. 将 ms 转化为易读的表示，是 1 的 plus version
+// 将 ms 转化为易读的表示，是 1 的 plus version
 
 // 求复数，会引入一个变复数过程中会不规则变化的词库
 var irregularPlurals = require('irregular-plurals');
