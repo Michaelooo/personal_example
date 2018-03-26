@@ -14,3 +14,7 @@ function parseMs(ms) {
 		milliseconds: roundTowardZero(ms) % 1000
 	};
 };
+
+
+let hi = require('./hirestime.js');
+console.log(hi)
