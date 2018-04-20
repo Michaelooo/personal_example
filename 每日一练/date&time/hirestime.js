@@ -60,3 +60,4 @@ module.exports.hiresTimeBrowserPerformance = hiresTimeBrowserPerformance
 module.exports.S = S
 module.exports.MS = MS
 module.exports.NS = NS
+
